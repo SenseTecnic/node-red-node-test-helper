@@ -25,7 +25,8 @@ describe('comment Node', function() {
     });
 
     it('should be loaded', function(done) {
-        var flow = [{id:"n1", type:"comment", name: "comment" }];
+        var flow = [{id:"f1", type:"tab", label:"Test flow"},
+                    {id:"n1", z: "f1", type:"comment", name: "comment" }];
         helper.load(commentNode, flow, function() {
             var n1 = helper.getNode("n1");
             n1.should.have.property('name', 'comment');

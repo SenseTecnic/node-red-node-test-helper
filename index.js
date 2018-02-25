@@ -41,6 +41,11 @@ var server;
 
 function helperNode(n) {
     RED.nodes.createNode(this, n);
+
+    this.error = function(logMessage,msg) {
+        console.log(logMessage);
+    }
+
 }
 
 module.exports = {

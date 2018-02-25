@@ -58,7 +58,8 @@ describe('lower-case Node', function () {
   });
 
   it('should be loaded', function (done) {
-    var flow = [{ id: "n1", type: "lower-case", name: "lower-case" }];
+    var flow = [{id: "f1", type: "tab", label: "Test flow"},
+                { id: "n1", z: "f1", type: "lower-case", name: "lower-case" }];
     helper.load(lowerNode, flow, function () {
       var n1 = helper.getNode("n1");
       n1.should.have.property('name', 'lower-case');
@@ -67,9 +68,9 @@ describe('lower-case Node', function () {
   });
 
   it('should make payload lower case', function (done) {
-    var flow = [
-      { id: "n1", type: "lower-case", name: "lower-case",wires:[["n2"]] },
-      { id: "n2", type: "helper" }
+    var flow = [{id: "f1", type: "tab", label: "Test flow"},
+      { id: "n1", z: "f1", type: "lower-case", name: "lower-case",wires:[["n2"]] },
+      { id: "n2", z: "f1", type: "helper" }
     ];
     helper.load(lowerNode, flow, function () {
       var n2 = helper.getNode("n2");

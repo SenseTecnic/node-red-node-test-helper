@@ -18,9 +18,9 @@ describe('lower-case Node', function () {
   });
 
   it('should make payload lower case', function (done) {
-    var flow = [
-      { id: "n1", type: "lower-case", name: "test name",wires:[["n2"]] },
-      { id: "n2", type: "helper" }
+    var flow = [{id:"f1", type:"tab", label:"Test flow"},
+      { id: "n1", z:"f1", type: "lower-case", name: "test name",wires:[["n2"]] },
+      { id: "n2", z:"f1", type: "helper" }
     ];
     helper.load(lowerNode, flow, function () {
       var n2 = helper.getNode("n2");

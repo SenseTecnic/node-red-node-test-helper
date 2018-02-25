@@ -29,8 +29,13 @@ describe('function node', function() {
         helper.unload();
     });
 
+    after(function(done) {
+        helper.stopServer(done);
+    });
+
     it('should be loaded', function(done) {
-        var flow = [{id:"n1", type:"function", name: "function" }];
+        var flow = [{id:"f1", type:"tab", label:"Test flow"},
+                    {id:"n1", z:"f1", type:"function", name: "function" }];
         helper.load(functionNode, flow, function() {
             var n1 = helper.getNode("n1");
             n1.should.have.property('name', 'function');
@@ -39,8 +44,9 @@ describe('function node', function() {
     });
 
     it('should send returned message', function(done) {
-        var flow = [{id:"n1",type:"function",wires:[["n2"]],func:"return msg;"},
-                    {id:"n2", type:"helper"}];
+        var flow = [{id:"f1", type:"tab", label:"Test flow"},
+                    {id:"n1", z:"f1", type:"function",wires:[["n2"]],func:"return msg;"},
+                    {id:"n2", z:"f1", type:"helper"}];
         helper.load(functionNode, flow, function() {
             var n1 = helper.getNode("n1");
             var n2 = helper.getNode("n2");
@@ -54,8 +60,9 @@ describe('function node', function() {
     });
 
     it('should send returned message using send()', function(done) {
-        var flow = [{id:"n1",type:"function",wires:[["n2"]],func:"node.send(msg);"},
-                    {id:"n2", type:"helper"}];
+        var flow = [{id:"f1", type:"tab", label:"Test flow"},
+                    {id:"n1", z:"f1",type:"function",wires:[["n2"]],func:"node.send(msg);"},
+                    {id:"n2", z:"f1", type:"helper"}];
         helper.load(functionNode, flow, function() {
             var n1 = helper.getNode("n1");
             var n2 = helper.getNode("n2");
@@ -69,8 +76,9 @@ describe('function node', function() {
     });
 
     it('should pass through _topic', function(done) {
-        var flow = [{id:"n1",type:"function",wires:[["n2"]],func:"return msg;"},
-                    {id:"n2", type:"helper"}];
+        var flow = [{id:"f1", type:"tab", label:"Test flow"},
+                    {id:"n1", z:"f1",type:"function",wires:[["n2"]],func:"return msg;"},
+                    {id:"n2", z:"f1", type:"helper"}];
         helper.load(functionNode, flow, function() {
             var n1 = helper.getNode("n1");
             var n2 = helper.getNode("n2");
@@ -85,9 +93,10 @@ describe('function node', function() {
     });
 
     it('should send to multiple outputs', function(done) {
-        var flow = [{id:"n1",type:"function",wires:[["n2"],["n3"]],
+        var flow = [{id:"f1", type:"tab", label:"Test flow"},
+                    {id:"n1", z:"f1",type:"function",wires:[["n2"],["n3"]],
                      func:"return [{payload: '1'},{payload: '2'}];"},
-                    {id:"n2", type:"helper"}, {id:"n3", type:"helper"} ];
+                    {id:"n2", z:"f1", type:"helper"}, {id:"n3", type:"helper"} ];
         helper.load(functionNode, flow, function() {
             var n1 = helper.getNode("n1");
             var n2 = helper.getNode("n2");
@@ -112,9 +121,10 @@ describe('function node', function() {
     });
 
     it('should send to multiple messages', function(done) {
-        var flow = [{id:"n1",type:"function",wires:[["n2"]],
+        var flow = [{id:"f1", type:"tab", label:"Test flow"},
+                    {id:"n1", z:"f1",type:"function",wires:[["n2"]],
                      func:"return [[{payload: 1},{payload: 2}]];"},
-                    {id:"n2", type:"helper"} ];
+                    {id:"n2", z:"f1", type:"helper"} ];
         helper.load(functionNode, flow, function() {
             var n1 = helper.getNode("n1");
             var n2 = helper.getNode("n2");
@@ -136,8 +146,9 @@ describe('function node', function() {
     });
 
     it('should allow input to be discarded by returning null', function(done) {
-        var flow = [{id:"n1",type:"function",wires:[["n2"]],func:"return null"},
-                    {id:"n2", type:"helper"}];
+        var flow = [{id:"f1", type:"tab", label:"Test flow"},
+                    {id:"n1", z:"f1",type:"function",wires:[["n2"]],func:"return null"},
+                    {id:"n2", z:"f1", type:"helper"}];
         helper.load(functionNode, flow, function() {
             var n1 = helper.getNode("n1");
             var n2 = helper.getNode("n2");
@@ -152,9 +163,10 @@ describe('function node', function() {
     });
 
     it('should handle null amongst valid messages', function(done) {
-        var flow = [{id:"n1",type:"function",wires:[["n2"]],func:"return [[msg,null,msg],null]"},
-                {id:"n2", type:"helper"},
-                {id:"n3", type:"helper"}];
+        var flow = [{id:"f1", type:"tab", label:"Test flow"},
+                    {id:"n1", z:"f1",type:"function",wires:[["n2"]],func:"return [[msg,null,msg],null]"},
+                {id:"n2", z:"f1", type:"helper"},
+                {id:"n3", z:"f1", type:"helper"}];
         helper.load(functionNode, flow, function() {
             var n1 = helper.getNode("n1");
             var n2 = helper.getNode("n2");
@@ -177,8 +189,9 @@ describe('function node', function() {
     });
 
     it('should get keys in global context', function(done) {
-        var flow = [{id:"n1",type:"function",wires:[["n2"]],func:"msg.payload=global.keys();return msg;"},
-                    {id:"n2", type:"helper"}];
+        var flow = [{id:"f1", type:"tab", label:"Test flow"},
+                    {id:"n1", z:"f1",type:"function",wires:[["n2"]],func:"msg.payload=global.keys();return msg;"},
+                    {id:"n2", z:"f1", type:"helper"}];
         helper.load(functionNode, flow, function() {
             var n1 = helper.getNode("n1");
             var n2 = helper.getNode("n2");
@@ -193,8 +206,9 @@ describe('function node', function() {
     });
 
     function testNonObjectMessage(functionText,done) {
-        var flow = [{id:"n1",type:"function",wires:[["n2"]],func:functionText},
-                {id:"n2", type:"helper"}];
+        var flow = [{id:"f1", type:"tab", label:"Test flow"},
+                    {id:"n1", z:"f1",type:"function",wires:[["n2"]],func:functionText},
+                    {id:"n2", z:"f1", type:"helper"}];
         helper.load(functionNode, flow, function() {
             var n1 = helper.getNode("n1");
             var n2 = helper.getNode("n2");
@@ -239,7 +253,8 @@ describe('function node', function() {
     });
 
     it('should handle and log script error', function(done) {
-        var flow = [{id:"n1",type:"function",wires:[["n2"]],func:"retunr"}];
+        var flow = [{id:"f1", type:"tab", label:"Test flow"},
+                    {id:"n1", z:"f1",type:"function",wires:[["n2"]],func:"retunr"}];
         helper.load(functionNode, flow, function() {
             var n1 = helper.getNode("n1");
             n1.receive({payload:"foo",topic: "bar"});
@@ -262,7 +277,8 @@ describe('function node', function() {
     });
 
     it('should handle node.on()', function(done) {
-        var flow = [{id:"n1",type:"function",wires:[["n2"]],func:"node.on('close',function(){node.log('closed')});"}];
+        var flow = [{id:"f1", type:"tab", label:"Test flow"},
+                    {id:"n1", z:"f1",type:"function",wires:[["n2"]],func:"node.on('close',function(){node.log('closed')});"}];
         helper.load(functionNode, flow, function() {
             var n1 = helper.getNode("n1");
             n1.receive({payload:"foo",topic: "bar"});
@@ -286,8 +302,9 @@ describe('function node', function() {
     });
 
     it('should set node context', function(done) {
-        var flow = [{id:"n1",type:"function",wires:[["n2"]],func:"context.set('count','0');return msg;"},
-                    {id:"n2", type:"helper"}];
+        var flow = [{id:"f1", type:"tab", label:"Test flow"},
+                    {id:"n1", z:"f1",type:"function",wires:[["n2"]],func:"context.set('count','0');return msg;"},
+                    {id:"n2", z:"f1", type:"helper"}];
         helper.load(functionNode, flow, function() {
             var n1 = helper.getNode("n1");
             var n2 = helper.getNode("n2");
@@ -302,8 +319,9 @@ describe('function node', function() {
     });
 
     it('should get node context', function(done) {
-        var flow = [{id:"n1",type:"function",wires:[["n2"]],func:"msg.payload=context.get('count');return msg;"},
-                    {id:"n2", type:"helper"}];
+        var flow = [{id:"f1", type:"tab", label:"Test flow"},
+                    {id:"n1", z:"f1",type:"function",wires:[["n2"]],func:"msg.payload=context.get('count');return msg;"},
+                    {id:"n2", z:"f1", type:"helper"}];
         helper.load(functionNode, flow, function() {
             var n1 = helper.getNode("n1");
             var n2 = helper.getNode("n2");
@@ -318,8 +336,9 @@ describe('function node', function() {
     });
 
     it('should get keys in node context', function(done) {
-        var flow = [{id:"n1",type:"function",wires:[["n2"]],func:"msg.payload=context.keys();return msg;"},
-                    {id:"n2", type:"helper"}];
+        var flow = [{id:"f1", type:"tab", label:"Test flow"},
+                    {id:"n1", z:"f1",type:"function",wires:[["n2"]],func:"msg.payload=context.keys();return msg;"},
+                    {id:"n2", z:"f1", type:"helper"}];
         helper.load(functionNode, flow, function() {
             var n1 = helper.getNode("n1");
             var n2 = helper.getNode("n2");
@@ -334,8 +353,9 @@ describe('function node', function() {
     });
 
     it('should set flow context', function(done) {
-        var flow = [{id:"n1",type:"function",z:"flowA",wires:[["n2"]],func:"flow.set('count','0');return msg;"},
-                    {id:"n2", type:"helper",z:"flowA"}];
+        var flow = [{id:"f1", type:"tab", label:"Test flow"},
+                    {id:"n1", z:"f1",type:"function",z:"flowA",wires:[["n2"]],func:"flow.set('count','0');return msg;"},
+                    {id:"n2", z:"f1", type:"helper",z:"flowA"}];
         helper.load(functionNode, flow, function() {
             var n1 = helper.getNode("n1");
             var n2 = helper.getNode("n2");
@@ -350,8 +370,9 @@ describe('function node', function() {
     });
 
     it('should get flow context', function(done) {
-        var flow = [{id:"n1",type:"function",z:"flowA",wires:[["n2"]],func:"msg.payload=flow.get('count');return msg;"},
-                    {id:"n2", type:"helper",z:"flowA"}];
+        var flow = [{id:"f1", type:"tab", label:"Test flow"},
+                    {id:"n1", z:"f1",type:"function",z:"flowA",wires:[["n2"]],func:"msg.payload=flow.get('count');return msg;"},
+                    {id:"n2", z:"f1", type:"helper",z:"flowA"}];
         helper.load(functionNode, flow, function() {
             var n1 = helper.getNode("n1");
             var n2 = helper.getNode("n2");
@@ -366,8 +387,9 @@ describe('function node', function() {
     });
 
     it('should get flow context', function(done) {
-        var flow = [{id:"n1",type:"function",z:"flowA",wires:[["n2"]],func:"msg.payload=context.flow.get('count');return msg;"},
-                    {id:"n2", type:"helper",z:"flowA"}];
+        var flow = [{id:"f1", type:"tab", label:"Test flow"},
+                    {id:"n1", z:"f1",type:"function",z:"flowA",wires:[["n2"]],func:"msg.payload=context.flow.get('count');return msg;"},
+                    {id:"n2", z:"f1", type:"helper",z:"flowA"}];
         helper.load(functionNode, flow, function() {
             var n1 = helper.getNode("n1");
             var n2 = helper.getNode("n2");
@@ -382,7 +404,8 @@ describe('function node', function() {
     });
 
     it('should get keys in flow context', function(done) {
-        var flow = [{id:"n1",type:"function",z:"flowA",wires:[["n2"]],func:"msg.payload=flow.keys();return msg;"},
+        var flow = [{id:"f1", type:"tab", label:"Test flow"},
+                    {id:"n1", z:"f1",type:"function",z:"flowA",wires:[["n2"]],func:"msg.payload=flow.keys();return msg;"},
                     {id:"n2", type:"helper",z:"flowA"}];
         helper.load(functionNode, flow, function() {
             var n1 = helper.getNode("n1");
@@ -398,8 +421,9 @@ describe('function node', function() {
     });
 
     it('should set global context', function(done) {
-        var flow = [{id:"n1",type:"function",wires:[["n2"]],func:"global.set('count','0');return msg;"},
-                    {id:"n2", type:"helper"}];
+        var flow = [{id:"f1", type:"tab", label:"Test flow"},
+                    {id:"n1", z:"f1",type:"function",wires:[["n2"]],func:"global.set('count','0');return msg;"},
+                    {id:"n2", z:"f1", type:"helper"}];
         helper.load(functionNode, flow, function() {
             var n1 = helper.getNode("n1");
             var n2 = helper.getNode("n2");
@@ -414,8 +438,9 @@ describe('function node', function() {
     });
 
     it('should get global context', function(done) {
-        var flow = [{id:"n1",type:"function",wires:[["n2"]],func:"msg.payload=global.get('count');return msg;"},
-                    {id:"n2", type:"helper"}];
+        var flow = [{id:"f1", type:"tab", label:"Test flow"},
+                    {id:"n1", z:"f1",type:"function",wires:[["n2"]],func:"msg.payload=global.get('count');return msg;"},
+                    {id:"n2", z:"f1", type:"helper"}];
         helper.load(functionNode, flow, function() {
             var n1 = helper.getNode("n1");
             var n2 = helper.getNode("n2");
@@ -430,8 +455,9 @@ describe('function node', function() {
     });
 
     it('should get global context', function(done) {
-        var flow = [{id:"n1",type:"function",wires:[["n2"]],func:"msg.payload=context.global.get('count');return msg;"},
-                    {id:"n2", type:"helper"}];
+        var flow = [{id:"f1", type:"tab", label:"Test flow"},
+                    {id:"n1", z:"f1",type:"function",wires:[["n2"]],func:"msg.payload=context.global.get('count');return msg;"},
+                    {id:"n2", z:"f1", type:"helper"}];
         helper.load(functionNode, flow, function() {
             var n1 = helper.getNode("n1");
             var n2 = helper.getNode("n2");
@@ -446,8 +472,9 @@ describe('function node', function() {
     });
 
     it('should handle setTimeout()', function(done) {
-        var flow = [{id:"n1",type:"function",wires:[["n2"]],func:"setTimeout(function(){node.send(msg);},1000);"},
-                    {id:"n2", type:"helper"}];
+        var flow = [{id:"f1", type:"tab", label:"Test flow"},
+                    {id:"n1", z:"f1",type:"function",wires:[["n2"]],func:"setTimeout(function(){node.send(msg);},1000);"},
+                    {id:"n2", z:"f1", type:"helper"}];
         helper.load(functionNode, flow, function() {
             var n1 = helper.getNode("n1");
             var n2 = helper.getNode("n2");
@@ -472,8 +499,9 @@ describe('function node', function() {
     });
 
     it('should handle setInterval()', function(done) {
-        var flow = [{id:"n1",type:"function",wires:[["n2"]],func:"setInterval(function(){node.send(msg);},100);"},
-                    {id:"n2", type:"helper"}];
+        var flow = [{id:"f1", type:"tab", label:"Test flow"},
+                    {id:"n1", z:"f1",type:"function",wires:[["n2"]],func:"setInterval(function(){node.send(msg);},100);"},
+                    {id:"n2", z:"f1", type:"helper"}];
         helper.load(functionNode, flow, function() {
             var n1 = helper.getNode("n1");
             var n2 = helper.getNode("n2");
@@ -491,7 +519,8 @@ describe('function node', function() {
     });
 
     it('should handle clearInterval()', function(done) {
-        var flow = [{id:"n1",type:"function",wires:[["n2"]],func:"var id=setInterval(null,100);setTimeout(function(){clearInterval(id);node.send(msg);},1000);"},
+        var flow = [{id:"f1", type:"tab", label:"Test flow"},
+                    {id:"n1", z:"f1",type:"function",wires:[["n2"]],func:"var id=setInterval(null,100);setTimeout(function(){clearInterval(id);node.send(msg);},1000);"},
                     {id:"n2", type:"helper"}];
         helper.load(functionNode, flow, function() {
             var n1 = helper.getNode("n1");
@@ -507,7 +536,8 @@ describe('function node', function() {
 
     describe('Logger', function () {
         it('should log an Info Message', function (done) {
-            var flow = [{id: "n1", type: "function", wires: [["n2"]], func: "node.log('test');"}];
+            var flow = [{id:"f1", type:"tab", label:"Test flow"},
+                        {id: "n1", z:"f1", type: "function", wires: [["n2"]], func: "node.log('test');"}];
             helper.load(functionNode, flow, function () {
                 var n1 = helper.getNode("n1");
                 n1.receive({payload: "foo", topic: "bar"});
@@ -529,7 +559,8 @@ describe('function node', function() {
             });
         });
         it('should log a Warning Message', function (done) {
-            var flow = [{id: "n1", type: "function", wires: [["n2"]], func: "node.warn('test');"}];
+            var flow = [{id:"f1", type:"tab", label:"Test flow"},
+                        {id: "n1", z:"f1", type: "function", wires: [["n2"]], func: "node.warn('test');"}];
             helper.load(functionNode, flow, function () {
                 var n1 = helper.getNode("n1");
                 n1.receive({payload: "foo", topic: "bar"});
@@ -551,7 +582,8 @@ describe('function node', function() {
             });
         });
         it('should log an Error Message', function (done) {
-            var flow = [{id: "n1", type: "function", wires: [["n2"]], func: "node.error('test');"}];
+            var flow = [{id:"f1", type:"tab", label:"Test flow"},
+                        {id: "n1", z:"f1", type: "function", wires: [["n2"]], func: "node.error('test');"}];
             helper.load(functionNode, flow, function () {
                 var n1 = helper.getNode("n1");
                 n1.receive({payload: "foo", topic: "bar"});

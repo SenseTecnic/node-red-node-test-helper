@@ -64,14 +64,16 @@ describe('HTTP Request Node', function() {
 
     after(function() {
         testServer.close();
+        helper.stopServer();
     });
     afterEach(function() {
         helper.unload();
     });
 
     it('get plain text content', function(done) {
-        var flow = [{id:"n1",type:"http request",wires:[["n2"]],method:"GET",ret:"txt",url:getTestURL('/text')},
-                    {id:"n2", type:"helper"}];
+        var flow = [{id:"f1", type:"tab", label:"Test flow"},
+                    {id:"n1", z:"f1",type:"http request",wires:[["n2"]],method:"GET",ret:"txt",url:getTestURL('/text')},
+                    {id:"n2", z:"f1", type:"helper"}];
         helper.load(httpRequestNode, flow, function() {
             var n1 = helper.getNode("n1");
             var n2 = helper.getNode("n2");
@@ -92,8 +94,9 @@ describe('HTTP Request Node', function() {
     });
 
     it('get JSON content', function(done) {
-        var flow = [{id:"n1",type:"http request",wires:[["n2"]],method:"GET",ret:"obj",url:getTestURL('/json-valid')},
-                    {id:"n2", type:"helper"}];
+        var flow = [{id:"f1", type:"tab", label:"Test flow"},
+                    {id:"n1", z:"f1",type:"http request",wires:[["n2"]],method:"GET",ret:"obj",url:getTestURL('/json-valid')},
+                    {id:"n2", z:"f1", type:"helper"}];
         helper.load(httpRequestNode, flow, function() {
             var n1 = helper.getNode("n1");
             var n2 = helper.getNode("n2");
@@ -113,8 +116,9 @@ describe('HTTP Request Node', function() {
     });
 
     it('get Buffer content', function(done) {
-        var flow = [{id:"n1",type:"http request",wires:[["n2"]],method:"GET",ret:"bin",url:getTestURL('/text')},
-                    {id:"n2", type:"helper"}];
+        var flow = [{id:"f1", type:"tab", label:"Test flow"},
+                    {id:"n1", z:"f1",type:"http request",wires:[["n2"]],method:"GET",ret:"bin",url:getTestURL('/text')},
+                    {id:"n2", z:"f1", type:"helper"}];
         helper.load(httpRequestNode, flow, function() {
             var n1 = helper.getNode("n1");
             var n2 = helper.getNode("n2");
@@ -135,8 +139,9 @@ describe('HTTP Request Node', function() {
     });
 
     it('returns plain text when JSON fails to parse', function(done) {
-        var flow = [{id:"n1",type:"http request",wires:[["n2"]],method:"GET",ret:"obj",url:getTestURL('/json-invalid')},
-                    {id:"n2", type:"helper"}];
+        var flow = [{id:"f1", type:"tab", label:"Test flow"},
+                    {id:"n1", z:"f1",type:"http request",wires:[["n2"]],method:"GET",ret:"obj",url:getTestURL('/json-invalid')},
+                    {id:"n2", z:"f1", type:"helper"}];
         helper.load(httpRequestNode, flow, function() {
             var n1 = helper.getNode("n1");
             var n2 = helper.getNode("n2");
@@ -157,7 +162,8 @@ describe('HTTP Request Node', function() {
 
 
     it('return the status code', function(done) {
-        var flow = [{id:"n1",type:"http request",wires:[["n2"]],method:"GET",ret:"txt",url:getTestURL('/statusCode204')},
+        var flow = [{id:"f1", type:"tab", label:"Test flow"},
+                    {id:"n1", z:"f1",type:"http request",wires:[["n2"]],method:"GET",ret:"txt",url:getTestURL('/statusCode204')},
                     {id:"n2", type:"helper"}];
         helper.load(httpRequestNode, flow, function() {
             var n1 = helper.getNode("n1");
@@ -176,8 +182,9 @@ describe('HTTP Request Node', function() {
     });
 
     it('allow the url to be missing the http:// prefix', function(done) {
-        var flow = [{id:"n1",type:"http request",wires:[["n2"]],method:"GET",ret:"txt",url:getTestURL('/text').substring("http://".length)},
-                    {id:"n2", type:"helper"}];
+        var flow = [{id:"f1", type:"tab", label:"Test flow"},
+                    {id:"n1", z:"f1",type:"http request",wires:[["n2"]],method:"GET",ret:"txt",url:getTestURL('/text').substring("http://".length)},
+                    {id:"n2", z:"f1", type:"helper"}];
         helper.load(httpRequestNode, flow, function() {
             var n1 = helper.getNode("n1");
             var n2 = helper.getNode("n2");
@@ -198,8 +205,9 @@ describe('HTTP Request Node', function() {
     });
 
     it('reject non http:// schemes - node config', function(done) {
-        var flow = [{id:"n1",type:"http request",wires:[["n2"]],method:"GET",ret:"txt",url:"ftp://foo"},
-                    {id:"n2", type:"helper"}];
+        var flow = [{id:"f1", type:"tab", label:"Test flow"},
+                    {id:"n1", z:"f1",type:"http request",wires:[["n2"]],method:"GET",ret:"txt",url:"ftp://foo"},
+                    {id:"n2", z:"f1", type:"helper"}];
         helper.load(httpRequestNode, flow, function() {
             var n1 = helper.getNode("n1");
             var n2 = helper.getNode("n2");
@@ -219,7 +227,8 @@ describe('HTTP Request Node', function() {
     });
 
     it('reject non http:// schemes - msg.url', function(done) {
-        var flow = [{id:"n1",type:"http request",wires:[["n2"]],method:"GET",ret:"txt"},
+        var flow = [{id:"f1", type:"tab", label:"Test flow"},
+                    {id:"n1", z:"f1",type:"http request",wires:[["n2"]],method:"GET",ret:"txt"},
         {id:"n2", type:"helper"}];
         helper.load(httpRequestNode, flow, function() {
             var n1 = helper.getNode("n1");
@@ -239,8 +248,9 @@ describe('HTTP Request Node', function() {
         });
     });
     it('allow the message to provide the url', function(done) {
-        var flow = [{id:"n1",type:"http request",wires:[["n2"]],method:"GET",ret:"txt"},
-                    {id:"n2", type:"helper"}];
+        var flow = [{id:"f1", type:"tab", label:"Test flow"},
+                    {id:"n1", z:"f1",type:"http request",wires:[["n2"]],method:"GET",ret:"txt"},
+                    {id:"n2", z:"f1", type:"helper"}];
         helper.load(httpRequestNode, flow, function() {
             var n1 = helper.getNode("n1");
             var n2 = helper.getNode("n2");
@@ -261,8 +271,9 @@ describe('HTTP Request Node', function() {
     });
 
     it('allow the message to provide the method', function(done) {
-        var flow = [{id:"n1",type:"http request",wires:[["n2"]],method:"use",ret:"txt",url:getTestURL('/text')},
-                    {id:"n2", type:"helper"}];
+        var flow = [{id:"f1", type:"tab", label:"Test flow"},
+                    {id:"n1", z:"f1",type:"http request",wires:[["n2"]],method:"use",ret:"txt",url:getTestURL('/text')},
+                    {id:"n2", z:"f1", type:"helper"}];
         helper.load(httpRequestNode, flow, function() {
             var n1 = helper.getNode("n1");
             var n2 = helper.getNode("n2");
@@ -283,8 +294,9 @@ describe('HTTP Request Node', function() {
     });
 
     it('allow the url to contain mustache placeholders', function(done) {
-        var flow = [{id:"n1",type:"http request",wires:[["n2"]],method:"GET",ret:"txt",url:getTestURL('/te{{placeholder}}')},
-                    {id:"n2", type:"helper"}];
+        var flow = [{id:"f1", type:"tab", label:"Test flow"},
+                    {id:"n1", z:"f1",type:"http request",wires:[["n2"]],method:"GET",ret:"txt",url:getTestURL('/te{{placeholder}}')},
+                    {id:"n2", z:"f1", type:"helper"}];
         helper.load(httpRequestNode, flow, function() {
             var n1 = helper.getNode("n1");
             var n2 = helper.getNode("n2");
@@ -305,8 +317,9 @@ describe('HTTP Request Node', function() {
     });
 
     it('send the payload as the body of a POST as application/json', function(done) {
-        var flow = [{id:"n1",type:"http request",wires:[["n2"]],method:"POST",ret:"obj",url:getTestURL('/postInspect')},
-                    {id:"n2", type:"helper"}];
+        var flow = [{id:"f1", type:"tab", label:"Test flow"},
+                    {id:"n1", z:"f1",type:"http request",wires:[["n2"]],method:"POST",ret:"obj",url:getTestURL('/postInspect')},
+                    {id:"n2", z:"f1", type:"helper"}];
         helper.load(httpRequestNode, flow, function() {
             var n1 = helper.getNode("n1");
             var n2 = helper.getNode("n2");
@@ -329,8 +342,9 @@ describe('HTTP Request Node', function() {
     });
 
     it('send a payload of 0 as the body of a POST as text/plain', function(done) {
-        var flow = [{id:"n1",type:"http request",wires:[["n2"]],method:"POST",ret:"obj",url:getTestURL('/postInspect')},
-                    {id:"n2", type:"helper"}];
+        var flow = [{id:"f1", type:"tab", label:"Test flow"},
+                    {id:"n1", z:"f1",type:"http request",wires:[["n2"]],method:"POST",ret:"obj",url:getTestURL('/postInspect')},
+                    {id:"n2", z:"f1", type:"helper"}];
         helper.load(httpRequestNode, flow, function() {
             var n1 = helper.getNode("n1");
             var n2 = helper.getNode("n2");
@@ -353,7 +367,8 @@ describe('HTTP Request Node', function() {
     });
 
     it('send an Object payload as the body of a POST', function(done) {
-        var flow = [{id:"n1",type:"http request",wires:[["n2"]],method:"POST",ret:"obj",url:getTestURL('/postInspect')},
+        var flow = [{id:"f1", type:"tab", label:"Test flow"},
+                    {id:"n1", z:"f1",type:"http request",wires:[["n2"]],method:"POST",ret:"obj",url:getTestURL('/postInspect')},
                     {id:"n2", type:"helper"}];
         helper.load(httpRequestNode, flow, function() {
             var n1 = helper.getNode("n1");
@@ -377,8 +392,9 @@ describe('HTTP Request Node', function() {
     })
 
     it('send a Buffer as the body of a POST', function(done) {
-        var flow = [{id:"n1",type:"http request",wires:[["n2"]],method:"POST",ret:"obj",url:getTestURL('/postInspect')},
-                    {id:"n2", type:"helper"}];
+        var flow = [{id:"f1", type:"tab", label:"Test flow"},
+                    {id:"n1", z:"f1",type:"http request",wires:[["n2"]],method:"POST",ret:"obj",url:getTestURL('/postInspect')},
+                    {id:"n2", z:"f1", type:"helper"}];
         helper.load(httpRequestNode, flow, function() {
             var n1 = helper.getNode("n1");
             var n2 = helper.getNode("n2");
@@ -401,8 +417,9 @@ describe('HTTP Request Node', function() {
     })
 
     it('send a Buffer as the body of a POST', function(done) {
-        var flow = [{id:"n1",type:"http request",wires:[["n2"]],method:"POST",ret:"obj",url:getTestURL('/postInspect')},
-                    {id:"n2", type:"helper"}];
+        var flow = [{id:"f1", type:"tab", label:"Test flow"},
+                    {id:"n1", z:"f1",type:"http request",wires:[["n2"]],method:"POST",ret:"obj",url:getTestURL('/postInspect')},
+                    {id:"n2", z:"f1", type:"helper"}];
         helper.load(httpRequestNode, flow, function() {
             var n1 = helper.getNode("n1");
             var n2 = helper.getNode("n2");
@@ -425,8 +442,9 @@ describe('HTTP Request Node', function() {
     })
 
     it('ignores unmodified msg.headers property', function(done) {
-        var flow = [{id:"n1",type:"http request",wires:[["n2"]],method:"POST",ret:"obj",url:getTestURL('/postInspect')},
-                    {id:"n2", type:"helper"}];
+        var flow = [{id:"f1", type:"tab", label:"Test flow"},
+                    {id:"n1", z:"f1",type:"http request",wires:[["n2"]],method:"POST",ret:"obj",url:getTestURL('/postInspect')},
+                    {id:"n2", z:"f1", type:"helper"}];
         helper.load(httpRequestNode, flow, function() {
             var n1 = helper.getNode("n1");
             var n2 = helper.getNode("n2");
@@ -446,8 +464,9 @@ describe('HTTP Request Node', function() {
     })
 
     it('uses modified msg.headers property', function(done) {
-        var flow = [{id:"n1",type:"http request",wires:[["n2"]],method:"POST",ret:"obj",url:getTestURL('/postInspect')},
-                    {id:"n2", type:"helper"}];
+        var flow = [{id:"f1", type:"tab", label:"Test flow"},
+                    {id:"n1", z:"f1",type:"http request",wires:[["n2"]],method:"POST",ret:"obj",url:getTestURL('/postInspect')},
+                    {id:"n2", z:"f1", type:"helper"}];
         helper.load(httpRequestNode, flow, function() {
             var n1 = helper.getNode("n1");
             var n2 = helper.getNode("n2");
