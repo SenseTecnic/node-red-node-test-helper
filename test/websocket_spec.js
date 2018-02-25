@@ -182,7 +182,7 @@ describe('websocket Node', function() {
             });
         });
 
-        it.only('should send', function(done) {
+        it('should send', function(done) {
             var flow = [{id:"f1", type:"tab", label:"Test flow"},
                 { id: "n1", z:"f1", type: "websocket-listener", path: "/ws" },
                 { id: "n2", z:"f1", type: "helper", wires: [["n3"]] },
